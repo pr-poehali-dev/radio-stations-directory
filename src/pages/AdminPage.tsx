@@ -217,21 +217,30 @@ export default function AdminPage() {
 
       {/* Delete confirm */}
       {deleteConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur p-4">
-          <div className="bg-card border border-border rounded-2xl w-full max-w-sm p-6 text-center animate-fade-in">
-            <Icon name="Trash2" size={32} className="text-red-400 mx-auto mb-3" />
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          style={{ backgroundColor: 'hsla(220,16%,6%,0.85)', backdropFilter: 'blur(8px)' }}
+          onClick={() => setDeleteConfirm(null)}
+        >
+          <div
+            className="bg-card border border-border rounded-2xl w-full max-w-sm p-6 text-center animate-fade-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-14 h-14 rounded-full bg-red-500/15 flex items-center justify-center mx-auto mb-4">
+              <Icon name="Trash2" size={28} className="text-red-400" />
+            </div>
             <h2 className="font-oswald text-xl font-bold mb-2">Удалить станцию?</h2>
-            <p className="text-muted-foreground text-sm mb-5">Это действие нельзя отменить</p>
+            <p className="text-muted-foreground text-sm mb-6">Это действие нельзя отменить</p>
             <div className="flex gap-3">
               <button
                 onClick={() => handleDelete(deleteConfirm)}
-                className="flex-1 bg-red-500 text-white py-3 rounded-xl font-semibold hover:bg-red-600 transition-colors"
+                className="flex-1 bg-red-500 text-white py-3 rounded-xl font-semibold hover:bg-red-600 active:scale-95 transition-all"
               >
                 Удалить
               </button>
               <button
                 onClick={() => setDeleteConfirm(null)}
-                className="flex-1 bg-secondary text-foreground py-3 rounded-xl font-semibold"
+                className="flex-1 bg-secondary text-foreground py-3 rounded-xl font-semibold hover:bg-secondary/70 active:scale-95 transition-all"
               >
                 Отмена
               </button>
