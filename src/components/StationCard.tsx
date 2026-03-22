@@ -15,120 +15,137 @@ function formatListeners(n?: number): string {
 
 export default function StationCard({ station, compact = false }: StationCardProps) {
   const { currentStation, isPlaying, play, togglePlay, toggleFavorite, isFavorite } = useRadioStore();
-  const isCurrentStation = currentStation?.id === station.id;
-  const isThisPlaying = isCurrentStation && isPlaying;
+  const isActive = currentStation?.id === station.id;
+  const isThisPlaying = isActive && isPlaying;
 
   const handlePlay = () => {
-    if (isCurrentStation) {
-      togglePlay();
-    } else {
-      play(station);
-    }
+    if (isActive) togglePlay();
+    else play(station);
   };
 
   if (compact) {
     return (
       <div
-        className={`station-card flex items-center gap-3 p-3 rounded-xl border bg-card cursor-pointer ${
-          isCurrentStation ? 'playing border-primary/50' : 'border-border hover:border-border/80'
+        className={`station-card group flex items-center gap-3 p-3 rounded-2xl border cursor-pointer transition-colors ${
+          isActive
+            ? 'playing border-primary/50 bg-primary/5'
+            : 'border-border bg-card hover:border-primary/20'
         }`}
         onClick={handlePlay}
       >
-        <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-lg flex-shrink-0">
-          {station.logo}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="text-sm font-semibold font-oswald truncate">{station.name}</div>
-          <div className="text-xs text-muted-foreground">{station.genre}</div>
-        </div>
-        <div className="flex items-center gap-2">
-          {isThisPlaying ? (
-            <div className="flex items-end gap-[2px] h-4">
-              <div className="wave-bar" style={{ height: '6px' }} />
-              <div className="wave-bar" style={{ height: '10px' }} />
-              <div className="wave-bar" style={{ height: '8px' }} />
-              <div className="wave-bar" style={{ height: '14px' }} />
-            </div>
-          ) : (
-            <div className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center">
-              <Icon name="Play" size={12} className="text-muted-foreground" />
+        <div className="relative w-11 h-11 rounded-xl overflow-hidden flex-shrink-0 bg-secondary">
+          {station.cover
+            ? <img src={station.cover} alt={station.name} className="w-full h-full object-cover" />
+            : <span className="absolute inset-0 flex items-center justify-center text-xl">{station.logo}</span>
+          }
+          {isThisPlaying && (
+            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+              <div className="wave-bars scale-75">
+                <div className="wave-bar" /><div className="wave-bar" /><div className="wave-bar" /><div className="wave-bar" />
+              </div>
             </div>
           )}
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="text-sm font-semibold truncate font-oswald">{station.name}</div>
+          <div className="text-xs text-muted-foreground truncate">{station.genre} · {station.city}</div>
+        </div>
+
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {station.frequency && (
+            <span className="text-[10px] text-muted-foreground hidden sm:block">{station.frequency}</span>
+          )}
+          <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${
+            isThisPlaying
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-secondary text-muted-foreground group-hover:bg-primary/20 group-hover:text-primary'
+          }`}>
+            <Icon name={isThisPlaying ? 'Pause' : 'Play'} size={12} />
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div
-      className={`station-card group flex flex-col p-4 rounded-2xl border bg-card ${
-        isCurrentStation ? 'playing border-primary/60' : 'border-border'
-      }`}
-    >
-      {/* Header */}
-      <div className="flex items-start justify-between mb-3">
-        <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center text-2xl">
-          {station.logo}
-        </div>
-        <button
-          onClick={(e) => { e.stopPropagation(); toggleFavorite(station.id); }}
-          className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-            isFavorite(station.id) ? 'text-red-400' : 'text-muted-foreground hover:text-red-400'
-          }`}
-        >
-          <Icon name="Heart" size={15} className={isFavorite(station.id) ? 'fill-red-400' : ''} />
-        </button>
-      </div>
+    <div className={`station-card group relative flex flex-col rounded-2xl overflow-hidden border bg-card ${
+      isActive ? 'playing border-primary/60' : 'border-border'
+    }`}>
+      {/* Cover image */}
+      <div className="relative w-full aspect-square overflow-hidden bg-secondary">
+        {station.cover
+          ? <img src={station.cover} alt={station.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          : <div className="w-full h-full flex items-center justify-center text-5xl">{station.logo}</div>
+        }
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-      {/* Info */}
-      <div className="flex-1">
-        <div className="flex items-center gap-2 mb-1">
-          <h3 className="font-oswald font-semibold text-base leading-tight">{station.name}</h3>
+        {/* Top badges */}
+        <div className="absolute top-3 left-3 right-3 flex items-start justify-between">
           {station.isPopular && (
-            <span className="text-[9px] bg-primary/20 text-primary border border-primary/30 px-1.5 py-0.5 rounded-full font-oswald tracking-wider">
+            <span className="text-[10px] bg-primary/90 text-primary-foreground px-2 py-0.5 rounded-full font-semibold tracking-wider uppercase">
               ТОП
             </span>
           )}
+          <button
+            onClick={(e) => { e.stopPropagation(); toggleFavorite(station.id); }}
+            className={`ml-auto w-8 h-8 rounded-full glass flex items-center justify-center transition-all hover:scale-110 active:scale-95 ${
+              isFavorite(station.id) ? 'text-red-400' : 'text-white/60 hover:text-red-400'
+            }`}
+          >
+            <Icon name="Heart" size={14} className={isFavorite(station.id) ? 'fill-red-400' : ''} />
+          </button>
         </div>
-        <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{station.description}</p>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span className="bg-secondary px-2 py-0.5 rounded-full">{station.genre}</span>
-          {station.frequency && <span>{station.frequency}</span>}
-          {station.listeners && (
-            <span className="flex items-center gap-1">
-              <Icon name="Users" size={10} />
-              {formatListeners(station.listeners)}
-            </span>
-          )}
+
+        {/* Playing indicator */}
+        {isThisPlaying && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+            <div className="wave-bars">
+              <div className="wave-bar" /><div className="wave-bar" /><div className="wave-bar" />
+              <div className="wave-bar" /><div className="wave-bar" />
+            </div>
+          </div>
+        )}
+
+        {/* Name over image */}
+        <div className="absolute bottom-0 left-0 right-0 p-3">
+          <h3 className="font-oswald font-bold text-white text-base leading-tight">{station.name}</h3>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <span className="text-[11px] text-white/70">{station.genre}</span>
+            {station.frequency && (
+              <>
+                <span className="text-white/40">·</span>
+                <span className="text-[11px] text-white/70">{station.frequency}</span>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Play button */}
-      <div className="flex items-center justify-between mt-4">
-        <div className="text-xs text-muted-foreground">{station.city}</div>
+      {/* Bottom bar */}
+      <div className="flex items-center justify-between px-3 py-2.5 gap-2">
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground min-w-0">
+          <Icon name="MapPin" size={11} />
+          <span className="truncate">{station.city}</span>
+          {station.listeners && (
+            <>
+              <span className="text-border mx-0.5">·</span>
+              <Icon name="Users" size={11} />
+              <span>{formatListeners(station.listeners)}</span>
+            </>
+          )}
+        </div>
+
         <button
           onClick={handlePlay}
-          className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold flex-shrink-0 transition-all active:scale-95 ${
             isThisPlaying
-              ? 'bg-primary text-primary-foreground glow-orange'
+              ? 'bg-primary text-primary-foreground glow-purple'
               : 'bg-secondary text-foreground hover:bg-primary hover:text-primary-foreground'
           }`}
         >
-          {isThisPlaying ? (
-            <>
-              <div className="flex items-end gap-[2px] h-3">
-                <div className="wave-bar" style={{ height: '5px' }} />
-                <div className="wave-bar" style={{ height: '9px' }} />
-                <div className="wave-bar" style={{ height: '6px' }} />
-              </div>
-              Слушаю
-            </>
-          ) : (
-            <>
-              <Icon name="Play" size={12} />
-              Слушать
-            </>
-          )}
+          <Icon name={isThisPlaying ? 'Pause' : 'Play'} size={11} />
+          {isThisPlaying ? 'Пауза' : 'Слушать'}
         </button>
       </div>
     </div>

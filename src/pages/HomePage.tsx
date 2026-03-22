@@ -9,45 +9,48 @@ interface HomePageProps {
 
 export default function HomePage({ onNavigate }: HomePageProps) {
   const { stations } = useRadioStore();
-  const popular = stations.filter((s) => s.isPopular).slice(0, 6);
-  const recent = stations.slice(0, 4);
+  const popular = stations.filter(s => s.isPopular).slice(0, 6);
+  const recent = stations.slice(-6);
 
   return (
-    <div className="space-y-10 animate-fade-in">
+    <div className="space-y-10 animate-fade-up">
       {/* Hero */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-secondary via-card to-background border border-border p-8 md:p-12">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/4" />
-        <div className="absolute bottom-0 left-20 w-40 h-40 bg-primary/8 rounded-full translate-y-1/2" />
-        <div className="relative">
+      <div className="relative overflow-hidden rounded-3xl p-8 md:p-12"
+        style={{
+          background: 'linear-gradient(135deg, hsla(262,83%,15%,0.8) 0%, hsla(224,18%,10%,0.9) 60%, hsla(172,66%,10%,0.6) 100%)',
+          border: '1px solid hsla(262,83%,68%,0.15)',
+        }}>
+        {/* Декоративные круги */}
+        <div className="absolute -top-16 -right-16 w-56 h-56 rounded-full opacity-20"
+          style={{ background: 'radial-gradient(circle, hsl(262,83%,68%), transparent)' }} />
+        <div className="absolute -bottom-10 left-1/3 w-40 h-40 rounded-full opacity-10"
+          style={{ background: 'radial-gradient(circle, hsl(172,66%,50%), transparent)' }} />
+
+        <div className="relative z-10">
           <div className="flex items-center gap-2 mb-4">
-            <div className="flex items-end gap-[3px] h-5">
-              <div className="wave-bar" style={{ height: '8px' }} />
-              <div className="wave-bar" style={{ height: '14px' }} />
-              <div className="wave-bar" style={{ height: '10px' }} />
-              <div className="wave-bar" style={{ height: '18px' }} />
-              <div className="wave-bar" style={{ height: '12px' }} />
+            <div className="wave-bars">
+              <div className="wave-bar" /><div className="wave-bar" /><div className="wave-bar" />
+              <div className="wave-bar" /><div className="wave-bar" />
             </div>
-            <span className="text-xs font-oswald tracking-widest text-primary uppercase">В эфире</span>
+            <span className="text-xs font-oswald tracking-widest text-primary/80 uppercase">В эфире прямо сейчас</span>
           </div>
-          <h1 className="font-oswald text-4xl md:text-6xl font-bold text-foreground leading-tight mb-3">
-            Радио России<br />
-            <span className="text-primary">онлайн</span>
+
+          <h1 className="font-oswald text-4xl md:text-6xl font-bold leading-tight mb-3">
+            Лучшие радиостанции<br />
+            <span className="text-gradient">России онлайн</span>
           </h1>
-          <p className="text-muted-foreground text-lg max-w-md mb-6">
-            Слушайте лучшие радиостанции страны — джаз, рок, поп, классика и новости прямо сейчас
+          <p className="text-muted-foreground text-base md:text-lg max-w-lg mb-7">
+            Слушайте джаз, рок, поп, классику и новости — {stations.length}+ станций со всей страны
           </p>
+
           <div className="flex flex-wrap gap-3">
-            <button
-              onClick={() => onNavigate('catalog')}
-              className="flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-full font-semibold hover:opacity-90 transition-opacity glow-orange"
-            >
+            <button onClick={() => onNavigate('catalog')}
+              className="flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-full font-semibold hover:opacity-90 active:scale-95 transition-all glow-purple">
               <Icon name="Play" size={16} />
               Слушать сейчас
             </button>
-            <button
-              onClick={() => onNavigate('search')}
-              className="flex items-center gap-2 bg-secondary text-foreground px-6 py-3 rounded-full font-semibold hover:bg-secondary/80 transition-colors"
-            >
+            <button onClick={() => onNavigate('search')}
+              className="flex items-center gap-2 bg-white/8 text-foreground border border-white/10 px-6 py-3 rounded-full font-semibold hover:bg-white/12 transition-colors">
               <Icon name="Search" size={16} />
               Найти станцию
             </button>
@@ -56,48 +59,49 @@ export default function HomePage({ onNavigate }: HomePageProps) {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-3">
         {[
-          { icon: 'Radio', value: `${stations.length}+`, label: 'Станций' },
-          { icon: 'Music', value: '12', label: 'Жанров' },
-          { icon: 'MapPin', value: '30+', label: 'Городов' },
-        ].map((stat) => (
-          <div key={stat.label} className="bg-card border border-border rounded-2xl p-4 text-center">
-            <Icon name={stat.icon} size={20} className="text-primary mx-auto mb-2" />
-            <div className="font-oswald text-2xl font-bold text-foreground">{stat.value}</div>
+          { icon: 'Radio',  value: `${stations.length}+`, label: 'Станций',  color: 'text-primary' },
+          { icon: 'Music2', value: '12',                   label: 'Жанров',   color: 'text-accent' },
+          { icon: 'MapPin', value: '30+',                  label: 'Городов',  color: 'text-purple-300' },
+        ].map(stat => (
+          <div key={stat.label} className="glass rounded-2xl p-4 text-center">
+            <Icon name={stat.icon} size={20} className={`${stat.color} mx-auto mb-2`} />
+            <div className="font-oswald text-2xl font-bold">{stat.value}</div>
             <div className="text-xs text-muted-foreground">{stat.label}</div>
           </div>
         ))}
       </div>
 
-      {/* Popular stations */}
-      <div>
+      {/* Popular */}
+      <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-oswald text-xl font-semibold">🔥 Популярные</h2>
-          <button onClick={() => onNavigate('catalog')} className="text-sm text-primary hover:opacity-80 transition-opacity flex items-center gap-1">
-            Все <Icon name="ChevronRight" size={14} />
+          <h2 className="font-oswald text-xl font-semibold flex items-center gap-2">
+            🔥 <span>Популярные</span>
+          </h2>
+          <button onClick={() => onNavigate('catalog')}
+            className="text-sm text-primary hover:opacity-80 transition-opacity flex items-center gap-1">
+            Все станции <Icon name="ChevronRight" size={14} />
           </button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3">
           {popular.map((station, i) => (
-            <div key={station.id} style={{ animationDelay: `${i * 0.05}s` }} className="animate-fade-in">
+            <div key={station.id} className="animate-fade-up" style={{ animationDelay: `${i * 0.06}s` }}>
               <StationCard station={station} />
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* All stations preview */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-oswald text-xl font-semibold">📻 Недавно добавленные</h2>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {recent.map((station) => (
+      {/* Recent */}
+      <section>
+        <h2 className="font-oswald text-xl font-semibold mb-4">🎵 Недавно добавленные</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          {recent.map(station => (
             <StationCard key={station.id} station={station} compact />
           ))}
         </div>
-      </div>
+      </section>
     </div>
   );
 }

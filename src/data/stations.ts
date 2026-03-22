@@ -1,5 +1,5 @@
-export type Genre = 
-  | 'Поп' | 'Рок' | 'Джаз' | 'Классика' | 'Хип-хоп' | 'Электронная' 
+export type Genre =
+  | 'Поп' | 'Рок' | 'Джаз' | 'Классика' | 'Хип-хоп' | 'Электронная'
   | 'Новости' | 'Разговорное' | 'Ретро' | 'Детское' | 'Спорт' | 'Народная';
 
 export interface Station {
@@ -10,6 +10,7 @@ export interface Station {
   city: string;
   streamUrl: string;
   logo: string;
+  cover?: string;
   frequency?: string;
   listeners?: number;
   isPopular?: boolean;
@@ -20,6 +21,17 @@ export const GENRES: Genre[] = [
   'Новости', 'Разговорное', 'Ретро', 'Детское', 'Спорт', 'Народная'
 ];
 
+const CDN = 'https://cdn.poehali.dev/projects/191eaa37-a38f-4b67-a24b-47b01fd9deeb/files';
+const COVERS = {
+  pop:        `${CDN}/716f5037-4fe5-4314-af51-52511a50d444.jpg`,
+  electronic: `${CDN}/d8d7da20-254c-48d7-96fa-2834e0bea51f.jpg`,
+  rock:       `${CDN}/28673c9c-6dd8-43dd-820e-99d79e688dcc.jpg`,
+  jazz:       `${CDN}/abfe19bb-4474-41b4-a2a4-3bcf08c544bd.jpg`,
+  news:       `${CDN}/48e3821b-0338-42e5-8be4-240752a13885.jpg`,
+  classic:    `${CDN}/24fe1142-7154-4de1-9860-ff6561d6b3b1.jpg`,
+  retro:      `${CDN}/ce4edfde-6ebd-493a-b9b1-8470ac991970.jpg`,
+};
+
 export const STATIONS: Station[] = [
   {
     id: '1',
@@ -29,6 +41,7 @@ export const STATIONS: Station[] = [
     city: 'Москва',
     streamUrl: 'https://ep256.hostingradio.ru/ep256.mp3',
     logo: '🎵',
+    cover: COVERS.pop,
     frequency: '106.2 FM',
     listeners: 124000,
     isPopular: true,
@@ -41,6 +54,7 @@ export const STATIONS: Station[] = [
     city: 'Санкт-Петербург',
     streamUrl: 'https://radiorecord.hostingradio.ru/rr96.aacp',
     logo: '🎧',
+    cover: COVERS.electronic,
     frequency: '107.9 FM',
     listeners: 98000,
     isPopular: true,
@@ -53,6 +67,7 @@ export const STATIONS: Station[] = [
     city: 'Москва',
     streamUrl: 'https://dorognoe.hostingradio.ru/dorognoe96.aacp',
     logo: '🚗',
+    cover: COVERS.pop,
     frequency: '96.0 FM',
     listeners: 87000,
     isPopular: true,
@@ -60,11 +75,12 @@ export const STATIONS: Station[] = [
   {
     id: '4',
     name: 'Радио России',
-    description: 'Государственное информационное радио',
+    description: 'Государственное информационное радио страны',
     genre: 'Разговорное',
     city: 'Москва',
     streamUrl: 'https://icecast.vgtrk.cdnvideo.ru/radio_russia_hls',
     logo: '📻',
+    cover: COVERS.news,
     frequency: '66.44 FM',
     listeners: 210000,
     isPopular: true,
@@ -77,6 +93,7 @@ export const STATIONS: Station[] = [
     city: 'Москва',
     streamUrl: 'https://icecast.vgtrk.cdnvideo.ru/mayak_hls',
     logo: '🗼',
+    cover: COVERS.news,
     frequency: '103.4 FM',
     listeners: 156000,
     isPopular: true,
@@ -89,6 +106,7 @@ export const STATIONS: Station[] = [
     city: 'Москва',
     streamUrl: 'https://nashe1.hostingradio.ru/nashe-320.mp3',
     logo: '🎸',
+    cover: COVERS.rock,
     frequency: '101.7 FM',
     listeners: 145000,
     isPopular: true,
@@ -101,6 +119,7 @@ export const STATIONS: Station[] = [
     city: 'Москва',
     streamUrl: 'https://icecast.avtoradio.ru/avtoradio.mp3',
     logo: '🏎',
+    cover: COVERS.rock,
     frequency: '90.3 FM',
     listeners: 113000,
     isPopular: false,
@@ -113,6 +132,7 @@ export const STATIONS: Station[] = [
     city: 'Москва',
     streamUrl: 'https://jazz.hostingradio.ru/jazz96.aacp',
     logo: '🎷',
+    cover: COVERS.jazz,
     frequency: '89.1 FM',
     listeners: 42000,
     isPopular: false,
@@ -125,6 +145,7 @@ export const STATIONS: Station[] = [
     city: 'Москва',
     streamUrl: 'https://classic.hostingradio.ru/classic96.aacp',
     logo: '🎻',
+    cover: COVERS.classic,
     frequency: '100.9 FM',
     listeners: 31000,
     isPopular: false,
@@ -137,6 +158,7 @@ export const STATIONS: Station[] = [
     city: 'Москва',
     streamUrl: 'https://dfm.hostingradio.ru/dfm96.aacp',
     logo: '🔊',
+    cover: COVERS.electronic,
     frequency: '101.2 FM',
     listeners: 76000,
     isPopular: false,
@@ -149,6 +171,7 @@ export const STATIONS: Station[] = [
     city: 'Москва',
     streamUrl: 'https://hitfm.hostingradio.ru/hitfm96.aacp',
     logo: '⭐',
+    cover: COVERS.pop,
     frequency: '107.4 FM',
     listeners: 88000,
     isPopular: false,
@@ -161,6 +184,7 @@ export const STATIONS: Station[] = [
     city: 'Москва',
     streamUrl: 'https://loveradio.hostingradio.ru/loveradio96.aacp',
     logo: '❤️',
+    cover: COVERS.pop,
     frequency: '106.7 FM',
     listeners: 67000,
     isPopular: false,
@@ -173,6 +197,7 @@ export const STATIONS: Station[] = [
     city: 'Москва',
     streamUrl: 'https://vesyoloye.hostingradio.ru/vesyoloye96.aacp',
     logo: '😄',
+    cover: COVERS.pop,
     frequency: '99.5 FM',
     listeners: 54000,
     isPopular: false,
@@ -185,6 +210,7 @@ export const STATIONS: Station[] = [
     city: 'Москва',
     streamUrl: 'https://echo.msk.ru/air/mp3high.m3u',
     logo: '🗣️',
+    cover: COVERS.news,
     frequency: '91.2 FM',
     listeners: 190000,
     isPopular: true,
@@ -197,6 +223,7 @@ export const STATIONS: Station[] = [
     city: 'Москва',
     streamUrl: 'https://retro.hostingradio.ru/retro96.aacp',
     logo: '📼',
+    cover: COVERS.retro,
     frequency: '88.3 FM',
     listeners: 102000,
     isPopular: true,
@@ -209,6 +236,7 @@ export const STATIONS: Station[] = [
     city: 'Москва',
     streamUrl: 'https://radio.detskoeradio.ru/listen',
     logo: '🧸',
+    cover: COVERS.pop,
     frequency: '90.6 FM',
     listeners: 38000,
     isPopular: false,
